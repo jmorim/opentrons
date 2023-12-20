@@ -34,14 +34,15 @@ def run(protocol: protocol_api.ProtocolContext):
   p300 = protocol.load_instrument('p300_single', 'right', tip_racks=[tips_300])
 
   # Protocol actions
-  ## Transfer 256 uL of stock solution (1.00 mg/mL) to A1 vial
-  p300.transfer(256, eppendorfs_1['A1'], plate_2['A1'], touch_tip=True)
-  ## Dilute to 1000 uL making a 256 ug/mL solution
-  p1000.transfer(1000-256, falcons['A3'], plate_2['A1'], touch_tip=True)
-  ## Transfer 500 uL diluent to each vial 
-  ## (check if p1000 tips fit in vial)
+  ## Transfer 256 uL of stock solution (1.00 mg/mL) to A1, B1, and C1 vials
   for i in range(3):
-    p1000.distribute(500, falcons['A3'], plate_2.rows()[i][1:8], touch_tip=True)
+    p300.transfer(256, eppendorfs_1['A1'], plate_2.columns()[0][i], touch_tip=True)
+    ## Dilute to 1000 uL making a 256 ug/mL solution
+    p1000.transfer(1000-256, falcons['A3'].bottom(z=40), plate_2.columns()[0][i], touch_tip=True)
+  ## Transfer 500 uL diluent to each vial 
+  ## (check if p1000 tips fit in vial) - they fit
+  for i in range(3):
+    p1000.distribute(500, falcons['A3'].bottom(z=38), plate_2.rows()[i][1:8], touch_tip=True)
     p1000.transfer(1000, falcons['A3'], plate_2.rows()[i][8], touch_tip=True)
   
   for i in range(3):
